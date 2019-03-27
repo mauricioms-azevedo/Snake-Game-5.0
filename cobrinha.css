@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300|Nova+Square');
 body {
 	color: white;
@@ -5,10 +6,16 @@ body {
 	background-color: black;
 	text-align: center;
 	cursor: default;
+=======
+body {
+	background-color: black;
+	text-align: center;
+>>>>>>> a1896a1d452a439f9a3b014c2adcd3d26ea5fae1
 }
 
 canvas {
     background-color: #f1f1f1;
+<<<<<<< HEAD
 }
 
 #countDown {
@@ -178,4 +185,6 @@ canvas {
 	0%{transform: scale(0.96);}
 	40%{transform: scale(1);}
 	100%{transform: scale(0.96);}
+=======
+>>>>>>> a1896a1d452a439f9a3b014c2adcd3d26ea5fae1
 }
