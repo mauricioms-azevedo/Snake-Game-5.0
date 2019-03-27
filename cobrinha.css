@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300|Nova+Square');
+body {
+	color: white;
+	font-family: 'Montserrat', sans-serif;
+	background-color: black;
+	text-align: center;
+	cursor: default;
+}
+
+canvas {
+    background-color: #f1f1f1;
+}
+
+#countDown {
+	display: none;
+}
+
+#number {
+	font-weight: bolder;
+	font-size: 120px;
+	animation: goUp 0.7s ease-out infinite;
+	opacity: 0;
+}
+
+@keyframes goUp {
+	from {transform: translate(0, 287px);}
+	45% {opacity: 1}
+	55% {opacity: 1}
+	to {transform: translate(0, 70px);}
+}
+
+#startPageDiv {
+	text-align: center;
+	display: none;
+}
+
+.lbScore {
+	text-align: right
+}
+
+#choose {
+	margin-top: 120px;
+}
+
+#home {
+	display: none;
+    margin-top: 12px;
+    margin-left: 442px;
+    margin-bottom: -30px;
+}
+
+#home:hover {
+	cursor: pointer;
+}
+
+#go {
+	display: none
+}
+
+#container {
+    margin-top: 70px;
+    height: 100px;
+    display: inline-block;
+    text-align: center;
+}
+
+#container2 {
+	padding: 0px 15px;
+	width: 180px;
+    margin-top: 47px;
+    border: 2px solid white;
+    border-radius: 5px
+}
+
+#back {
+	margin-top: 8px;
+	margin-left: 8px;
+	position: absolute;
+}
+
+#back:hover {
+	cursor: pointer;
+}
+
+#leaderboard {
+	display: none
+}
+
+#lbBtn {
+	margin-top: 10px;
+	display: inline-block;
+	text-align: center;
+}
+
+#lbTxt {
+	color: white;
+	border-radius: 5px;
+	display: inline-block;
+	position: relative;
+	padding: 5px;
+	transition: 0.1s ease-out
+}
+
+#lbTxt:hover {
+	background-color: grey;
+	color: black;
+	cursor: pointer;
+}
+
+#levels {
+	margin-top: -10px;
+	width: 110px;
+	height: 180px;
+	display: inline-block;
+	text-align: center;
+}
+
+.btns {
+	color: white;
+	border-radius: 5px;
+	transform: scale(1.5);
+	display: inline-block;
+	position: relative;
+	padding: 5px;
+	transition: 0.1s ease-out
+}
+
+.btns:hover {
+	background-color: grey;
+	color: black;
+	cursor: pointer;
+}
+
+#fadeBlack {
+	display: inline-block;
+	width: 500px;
+	height: 500px;
+	background-color: black;
+	position: absolute;
+	transition: 0.2s ease-out;
+	opacity: 0.7;
+}
+
+#gameOver {
+	width: 300px;
+	height: 200px;
+	font-weight: bolder;
+	font-size: 40px;
+	display: inline-block;
+	margin-top: 170px;
+	margin-bottom: -50px;
+}
+
+#goScore {
+    margin-top: -20px;
+    font-weight: lighter;
+    font-size: 45px;
+    margin-bottom: 162px;
+}
+
+#score {
+	margin-top: 30px;
+	line-height: 0;
+	font-size: 40px;
+	font-family: 'Nova Square', cursive;
+}
+
+#newBest {
+	margin-top: -100px;
+	font-weight: bold;
+}
+
+#anyKey {
+	animation: jump 1s ease-out infinite
+}
+
+@keyframes jump{
+	0%{transform: scale(0.96);}
+	40%{transform: scale(1);}
+	100%{transform: scale(0.96);}
+}

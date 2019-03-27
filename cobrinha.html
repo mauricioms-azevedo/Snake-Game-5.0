@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="cobrinha.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<title>Cobrinha</title>
+</head>
+<body onload="startPage()">
+	<h1>Snake Game</h1>
+	<div id="fadeBlack">
+
+		<div id="startPageDiv">
+			<h1 id="choose">Choose level:</h1>
+			<div id="levels">
+				<p class="btns" onclick="countDown(150)">Easy</p>
+				<p class="btns" onclick="countDown(100)">Normal</p>
+				<p class="btns" onclick="countDown(50)">Insane</p>
+			</div><br>
+			<div id="lbBtn">
+				<h2 id="lbTxt" onclick="leaderboard()">Leaderboard</h2>
+			</div>
+		</div>
+
+		<div id="leaderboard">
+			<div id="back" onclick="back()"><i class="fas fa-arrow-circle-left fa-3x"></i></div>
+			<div id="container">
+				<h1>Leaderbord</h1>
+				<div id="container2">
+					<h2 style="float: left; display: inline-block;">Easy</h2><h2 id="easy" class="lbScore"></h2><br>
+					<h2 style="float: left; display: inline-block;">Normal</h2><h2 id="normal" class="lbScore"></h2><br>
+					<h2 style="float: left; display: inline-block;">Insane</h2><h2 id="insane" class="lbScore"></h2>
+				</div>
+			</div>
+		</div>
+
+		<div id="countDown">
+			<div id="number">0</div>
+		</div>
+
+		<div id="go">
+			<div id="home" onclick="startPage()"><i class="fas fa-home fa-2x"></i></div>
+			<div id="gameOver"></div><br>
+			<div id="newBest"></div><br>
+			<div id="goScore"></div>
+			<div id="bestScore"></div>
+			<div id="anyKey"></div>
+		</div>
+
+	</div>
+	<canvas id="canvas" width="500" height="500"></canvas>
+	<p id="score" style="color: white"></p>
+	<script>
+		var difficulty
+		var tail
+		var body = document.getElementsByTagName('BODY')[0]
+		var canvas = document.getElementById('canvas')
+		var startPageDiv = document.getElementById('startPageDiv')
+		var fadeBlack = document.getElementById('fadeBlack')
+		var gameOver = document.getElementById('gameOver')
+		var anyKey = document.getElementById('anyKey')
+		var go = document.getElementById('go')
+		var homeBtn = document.getElementById('home')
+		var ctx = canvas.getContext('2d')
+		var lb = document.getElementById('leaderboard')
+		var dx = 1
+		var dy = 0
+		var stop = false
+		var scl = canvas.width/25
+		var	foodSpotX = scl*Math.floor(Math.random()*25)
+		var	foodSpotY = scl*Math.floor(Math.random()*25)
+		var points = 0
+		var pointsEasy = 0
+		var pointsNormal = 0
+		var pointsInsane = 0
+		var score = document.getElementById('score')
+		var goScore = document.getElementById('goScore')
+		var bestScore = document.getElementById('bestScore')
+		var newBest = document.getElementById('newBest')
+		var lbEasy = document.getElementById('easy')
+		var lbNormal = document.getElementById('normal')
+		var lbInsane = document.getElementById('insane')
+		var countDownNum = document.getElementById('number')
+		var countDownDiv = document.getElementById('countDown')
+		var countDownInterval
+		var interval
+		var count = 1
+		var mostPoints = 0
+		var mostPointsEasy = 0
+		var mostPointsNormal = 0
+		var mostPointsInsane = 0
+		let snake = [
+			{x: scl*2, y: scl*12},
+			{x: scl*1, y: scl*12},
+			{x: scl, y: scl*12}
+		]
+
+		function leaderboard(){
+			startPageDiv.style.display = 'none'
+			lb.style.display = 'block'
+
+			lbEasy.innerHTML = mostPointsEasy
+			lbNormal.innerHTML = mostPointsNormal
+			lbInsane.innerHTML = mostPointsInsane
+		}
+
+		function startPage(){
+			go.style.display = 'none'
+			startPageDiv.style.display = 'block'
+			fadeBlack.style.opacity = '0.7'
+			homeBtn.style.display = 'none'
+			bestScore.innerHTML = ''
+			gameOver.innerHTML = ''
+			anyKey.innerHTML = ''
+			goScore.innerHTML =  ''
+			score.innerHTML = ''
+			newBest.innerHTML = ''
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+		}
+
+		function back(){
+			startPageDiv.style.display = 'block'
+			lb.style.display = 'none'
+		}
+
+		function updateGameArea() {
+			sameFrame = false
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			newPos()
+			food()
+			drawSnake()
+		}
+
+
+		window.addEventListener("keydown", function(e) {
+
+		    if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+		        e.preventDefault();
+		    }
+		}, false);
+
+		window.addEventListener('keydown', function (e) {
+			var key = e.keyCode
+
+			if (key == 37 && dx !== 1 && !sameFrame) {dx = -1; dy = 0; sameFrame = true}
+			if (key == 38 && dy !== 1 && !sameFrame) {dy = -1; dx = 0; sameFrame = true}
+			if (key == 39 && dx !== -1 && !sameFrame) {dx = 1; dy = 0; sameFrame = true}
+			if (key == 40 && dy !== -1 && !sameFrame) {dy = 1; dx = 0; sameFrame = true}
+		})
+
+		function newPos(){
+			for (i = snake.length-1; i>0; i--){
+				snake[i].x = snake[i-1].x
+				snake[i].y = snake[i-1].y
+			}
+
+			snake[0].x += dx*scl
+			snake[0].y += dy*scl
+
+			if(snake[0].x == food.x && snake[0].y == food.y){
+				points++
+				score.innerHTML = points
+
+				if(difficulty == 150){
+					pointsEasy = points
+				}else if(difficulty == 100){
+					pointsNormal = points
+				}else if(difficulty == 50){
+					pointsInsane = points
+				}
+				
+			 	tail = {x: 0, y: 0}
+				tail.x += snake[snake.length-1].x
+				tail.y += snake[snake.length-1].y
+
+				snake.push(tail)
+				food.newSpot()
+			}
+
+			if(snake[0].x > canvas.width-scl || snake[0].x < 0 || snake[0].y > canvas.height-scl || snake[0].y < 0){
+				clearInterval(interval)
+				lost()
+			}
+
+			for(i=2; i<snake.length; i++){
+					
+				if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
+					clearInterval(interval)
+					lost()
+				}
+			}
+		}
+
+		function drawSnake(){
+			snake.forEach(drawSnakePart)
+		}
+
+		var food = function(){
+
+			food.newSpot = function(){
+				foodSpotX = scl*Math.floor(Math.random()*25)
+				foodSpotY = scl*Math.floor(Math.random()*25)
+			}
+
+			for(i=0; i<snake.length; i++){
+
+				if(foodSpotX == snake[i].x && foodSpotY == snake[i].y){
+					food.newSpot()
+				}else{
+					food.x = foodSpotX
+					food.y = foodSpotY
+
+					drawFood()
+				}
+			}
+		}
+
+		function drawFood(){
+			ctx.fillStyle = 'red'
+			ctx.fillRect(food.x+0.5, food.y+0.5, scl, scl)
+			ctx.strokeStyle = 'black'
+			ctx.strokeRect(food.x+0.5, food.y+0.5, scl, scl)
+		}
+
+		function drawSnakePart(snakePart){
+			ctx.fillStyle = 'green'
+			ctx.strokeStyle = 'black'
+			ctx.fillRect(snakePart.x+0.5, snakePart.y+0.5, scl, scl)
+			ctx.strokeRect(snakePart.x+0.5, snakePart.y+0.5, scl, scl)
+		}
+
+		function lost(){
+			body.style.cursor = 'default'
+			go.style.display = 'block'
+			if(difficulty == 150){
+			bestScore.innerHTML = 'Best: ' + mostPointsEasy
+			}else if(difficulty == 100){
+			bestScore.innerHTML = 'Best: ' + mostPointsNormal
+			}else if(difficulty == 50){
+			bestScore.innerHTML = 'Best: ' + mostPointsInsane
+			}
+			homeBtn.style.display = 'block'
+			gameOver.innerHTML = 'Game Over'
+			anyKey.innerHTML = 'Press "enter" to retry'
+			goScore.innerHTML = points
+			goScore.style.marginBottom = '143px'
+
+				if(difficulty == 150 && pointsEasy > mostPointsEasy){
+				mostPointsEasy = pointsEasy
+				newBest.innerHTML = 'New Best!'
+				}else if(difficulty == 100 && pointsNormal > mostPointsNormal){
+				mostPointsNormal = pointsNormal
+				newBest.innerHTML = 'New Best!'
+				}else if(difficulty == 50 && pointsInsane > mostPointsInsane){
+				mostPointsInsane = pointsInsane
+				newBest.innerHTML = 'New Best!'
+				}
+			fadeBlack.style.opacity = '0.7'
+			
+			score.innerHTML = ''
+			window.addEventListener('keydown', restart)
+		}
+
+		function restart(e){
+			if(e.keyCode == 13){
+				startGame()
+			}
+		}
+
+		function countDown(speed){
+			countDownNum.innerHTML = ''
+			count = 1
+			countDownDiv.style.display = 'block'
+			startPageDiv.style.display = 'none'
+			countDownNum.innerHTML = count
+			count++
+			countDownInterval = setInterval(function(){countDownNum.innerHTML = count++}, 700)
+			setTimeout(startGame, 2100, speed)
+		}
+
+		function startGame(speed){
+			clearInterval(countDownInterval)
+			countDownDiv.style.display = 'none'
+			body.style.cursor = 'none'
+			canvas.style.cursor = 'none'
+			if(speed !== undefined){
+				difficulty = speed
+			}
+			startPageDiv.style.display = 'none'
+			window.removeEventListener('keydown', restart)
+			fadeBlack.style.opacity = '0'
+			goScore.style.marginBottom = '162px'
+			interval = setInterval(updateGameArea, difficulty)
+			points = 0
+			newBest.innerHTML = ''
+			score.innerHTML = points
+			snake = [
+				{x: scl*2, y: scl*12},
+				{x: scl*1, y: scl*12},
+				{x: scl, y: scl*12}
+			]	
+			dx = 1
+			dy = 0
+			foodSpotX = scl*Math.floor(Math.random()*25)
+			foodSpotY = scl*Math.floor(Math.random()*25)
+		}
+	</script>
+</body>
+</html>
