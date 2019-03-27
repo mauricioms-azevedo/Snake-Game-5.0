@@ -2,6 +2,7 @@ let snake = [
 	{x: 150, y: 150},
 	{x: 120, y: 150},
 	{x: 90, y: 150}
+	{x: 30, y: 150}
 ]
 var tail
 var canvas = document.getElementById('canvas')
